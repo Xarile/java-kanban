@@ -12,7 +12,6 @@ public class Main {
         Subtask subtask1 = new Subtask(0, "Subtask 1", "Description Subtask 1", Status.NEW, epic1.getId());
         Subtask subtask2 = new Subtask(0, "Subtask 2", "Description Subtask 2", Status.NEW, epic1.getId());
 
-
         // Добавление задач в менеджер
         manager.createTask(task1);
         manager.createTask(task2);

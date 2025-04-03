@@ -6,9 +6,13 @@ public class TaskManager {
     private Map<Integer, Epic> epics = new HashMap<>();
     private int nextId = 1;
 
+    private int generateNextId() {
+        return nextId++;
+    }
+
     // Методы для задач
     public int createTask(Task task) {
-        task.setId(nextId++);
+        task.setId(generateNextId());
         tasks.put(task.getId(), task);
         return task.getId();
     }
@@ -37,12 +41,12 @@ public class TaskManager {
 
     // Методы для подзадач
     public int createSubtask(Subtask subtask) {
-        subtask.setId(nextId++);
+        subtask.setId(generateNextId());
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
         if (epic != null) {
             epic.addSubtaskId(subtask.getId());
-            updateEpicStatus(epic);
+            updateEpicStatus(epic); // Обновляем статус эпика
         }
         return subtask.getId();
     }
@@ -52,7 +56,7 @@ public class TaskManager {
             subtasks.put(subtask.getId(), subtask);
             Epic epic = epics.get(subtask.getEpicId());
             if (epic != null) {
-                updateEpicStatus(epic);
+                updateEpicStatus(epic); // Обновляем статус эпика
             }
         }
     }
@@ -63,7 +67,7 @@ public class TaskManager {
             Epic epic = epics.get(subtask.getEpicId());
             if (epic != null) {
                 epic.removeSubtaskId(id);
-                updateEpicStatus(epic);
+                updateEpicStatus(epic); // Обновляем статус эпика
             }
         }
     }
@@ -80,13 +84,13 @@ public class TaskManager {
         subtasks.clear();
         for (Epic epic : epics.values()) {
             epic.getSubtaskIds().clear();
-            updateEpicStatus(epic);
+            updateEpicStatus(epic); // Обновляем статус эпика
         }
     }
 
     // Методы для эпиков
     public int createEpic(Epic epic) {
-        epic.setId(nextId++);
+        epic.setId(generateNextId());
         epics.put(epic.getId(), epic);
         return epic.getId();
     }
