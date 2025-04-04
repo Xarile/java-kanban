@@ -6,10 +6,6 @@ public class TaskManager {
     private Map<Integer, Epic> epics = new HashMap<>();
     private int nextId = 1;
 
-    private int generateNextId() {
-        return nextId++;
-    }
-
     // Методы для задач
     public int createTask(Task task) {
         task.setId(generateNextId());
@@ -170,5 +166,9 @@ public class TaskManager {
         } else {
             epic.setStatus(Status.IN_PROGRESS);
         }
+    }
+
+    private int generateNextId() {
+        return nextId++;
     }
 }
