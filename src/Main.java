@@ -5,6 +5,8 @@ import models.Task;
 import manager.Managers;
 import manager.TaskManager;
 
+import java.util.List;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -56,6 +58,8 @@ public class Main {
         System.out.println("\nЭпики после удаления:");
         System.out.println(manager.getAllEpics());
         manager.getAllEpics().forEach(System.out::println);
+
+
 
     }
 

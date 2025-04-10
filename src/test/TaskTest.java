@@ -148,4 +148,25 @@ class TaskTest {
         assertNotNull(history, "После добавления задачи, история не должна быть пустой.");
         assertEquals(1, history.size(), "После добавления задачи, история не должна быть пустой.");
     }
+    @Test
+    void checkHistory(){
+        Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW);
+        Task task2 = new Task(2, "Task 2", "Description 2", Status.NEW);
+        Task task3 = new Task(3, "Task 3", "Description 3", Status.NEW);
+
+        manager.createTask(task1);
+        manager.createTask(task2);
+        manager.createTask(task3);
+
+        manager.getTask(1);
+        manager.getTask(2);
+        manager.getTask(3);
+
+        List<Task> history = manager.getHistory();  // История из менеджера
+        assertEquals(3, history.size(), "содержит 3 задачи");
+
+        assertTrue(history.contains(task1), " содержит task1");
+        assertTrue(history.contains(task2), " содержит task2");
+        assertTrue(history.contains(task3), " содержит task3");
+    }
 }

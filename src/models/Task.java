@@ -16,9 +16,8 @@ public class Task {
         this.status = status;
     }
     public Task copy() {
-         Task copyTask = new Task(this.id, this.name, this.description, this.status);
 
-         return copyTask;
+         return new Task(this.id, this.name, this.description, this.status);
     }
 
     public int getId() {
