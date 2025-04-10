@@ -1,3 +1,5 @@
+package models;
+
 import java.util.Objects;
 
 public class Task {
@@ -12,6 +14,11 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
+    }
+    public Task copy() {
+         Task copyTask = new Task(this.id, this.name, this.description, this.status);
+
+         return copyTask;
     }
 
     public int getId() {
@@ -61,7 +68,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "Task {" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

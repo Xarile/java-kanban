@@ -1,3 +1,5 @@
+package models;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,9 @@ public class Epic extends Task {
     }
 
     public void addSubtaskId(int subtaskId) {
+        if (subtaskId == getId()) {
+            throw new IllegalArgumentException("Эпик не может быть подзадачей самого себя");
+        }
         subtaskIds.add(subtaskId);
     }
 
@@ -23,12 +28,22 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
+        return "Epic {" +
                 "id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
                 ", subtaskIds=" + subtaskIds +
                 '}';
+    }
+
+    @Override
+    public Epic copy() {
+        Epic copy = new Epic(getId(), getName(), getDescription(), getStatus());
+        for (Integer subtaskId : subtaskIds) {
+            copy.addSubtaskId(subtaskId);
+        }
+        return copy;
+
     }
 }

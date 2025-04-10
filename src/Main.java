@@ -1,11 +1,19 @@
+import models.Epic;
+import models.Status;
+import models.Subtask;
+import models.Task;
+import manager.Managers;
+import manager.TaskManager;
+
+
 public class Main {
     public static void main(String[] args) {
-        TaskManager manager = new TaskManager();
+        TaskManager manager = Managers.getDefault();
 
         // Создание задач
         Task task1 = new Task(0, "Task 1", "Description 1", Status.NEW);
         Task task2 = new Task(0, "Task 2", "Description 2", Status.IN_PROGRESS);
-        Task task3 = new Task(0,"Task 3 ", "Discription 3", Status.DONE);
+        Task task3 = new Task(0,"Task 3 ", "Description 3", Status.DONE);
 
         // Создание эпика с подзадачами
         Epic epic1 = new Epic(0, "Epic 1", "Description Epic 1", Status.NEW);
@@ -48,5 +56,8 @@ public class Main {
         System.out.println("\nЭпики после удаления:");
         System.out.println(manager.getAllEpics());
         manager.getAllEpics().forEach(System.out::println);
+
     }
+
+
 }

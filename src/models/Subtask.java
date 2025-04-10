@@ -1,3 +1,5 @@
+package models;
+
 public class Subtask extends Task {
     private int epicId;
 
@@ -6,17 +8,25 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
+    @Override
+    public Subtask copy() {
+        return new Subtask(getId(), getName(), getDescription(), getStatus(), getEpicId());
+    }
+
     public int getEpicId() {
         return epicId;
     }
 
     public void setEpicId(int epicId) {
+        if (epicId == getId()) {
+            throw new IllegalArgumentException("Подзадача не может быть своим собственным эпиком");
+        }
         this.epicId = epicId;
     }
 
     @Override
     public String toString() {
-        return "Subtask{" +
+        return "Subtask {" +
                 "id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
@@ -24,4 +34,6 @@ public class Subtask extends Task {
                 ", epicId=" + epicId +
                 '}';
     }
+
+
 }
