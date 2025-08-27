@@ -36,7 +36,7 @@ class TaskTest {
     @Test
     void subtaskAndEpicEqualById() {
         Task subtask = new Subtask(1, "Sub", "Desc", Status.NEW, 0);
-        Task epic = new Epic(1, "Epic", "Desc",Status.NEW);
+        Task epic = new Epic(1, "Epic", "Desc", Status.NEW);
 
         assertNotEquals(subtask, epic, "Разные типы с одинаковым id не должны быть равны");
     }
@@ -83,9 +83,9 @@ class TaskTest {
     // 6. Проверка добавления разных типов задач
     @Test
     void managerShouldStoreAllTaskTypes() {
-        Task task = new Task(1,"Task", "Desc", Status.NEW);
-        Epic epic = new Epic(1,"Epic", "Desc", Status.DONE);
-        Subtask subtask = new Subtask(1,"Sub", "Desc", Status.NEW, epic.getId());
+        Task task = new Task(1, "Task", "Desc", Status.NEW);
+        Epic epic = new Epic(1, "Epic", "Desc", Status.DONE);
+        Subtask subtask = new Subtask(1, "Sub", "Desc", Status.NEW, epic.getId());
 
         int taskId = manager.createTask(task);
         int epicId = manager.createEpic(epic);
@@ -104,7 +104,7 @@ class TaskTest {
         Task manualTask = new Task(999, "Manual", "Desc", Status.NEW);
         manager.createTask(manualTask);
 
-        Task autoTask = new Task(1,"Auto", "Desc", Status.NEW);
+        Task autoTask = new Task(1, "Auto", "Desc", Status.NEW);
         int autoId = manager.createTask(autoTask);
 
         assertNotEquals(999, autoId, "ID должны быть уникальными");
@@ -126,30 +126,62 @@ class TaskTest {
         );
     }
 
-    // 9. История должна сохранять версии задач
+    // 9. История хранит только последний просмотр
     @Test
-    void historyShouldKeepTaskVersions() {
-        Task task = new Task(1, "Task v1", "Desc", Status.NEW);
-        Task task1 = new Task(1,"Task v2" ,"Desc", Status.NEW );
-
-        historyManager.add(task);
-        historyManager.add(task1);
-
+    void historyShouldKeepOnlyLastVersionPerId() {
+        Task v1 = new Task(1, "Task v1", "Desc", Status.NEW);
+        Task v2 = new Task(1, "Task v2", "Desc", Status.DONE);
+        historyManager.add(v1);
+        historyManager.add(v2);
         List<Task> history = historyManager.getHistory();
-        assertEquals("Task v1", history.get(0).getName(), "Должна сохраняться первая версия");
-        assertEquals("Task v2", history.get(1).getName(), "Должна сохраняться вторая версия");
+        assertEquals(1, history.size(), "В истории должна остаться только последняя версия по id");
+        assertEquals("Task v2", history.get(0).getName());
     }
+
+    // 10. Удаление задач удаляет их из истории
+    @Test
+    void deletingTasksRemovesThemFromHistory() {
+        int t1 = manager.createTask(new Task(0, "Test1", "Desc", Status.NEW));
+        int t2 = manager.createTask(new Task(0, "Test2", "Desc", Status.NEW));
+        manager.getTask(t1);
+        manager.getTask(t2);
+        manager.deleteTask(t1);
+        List<Task> history = manager.getHistory();
+        assertEquals(1, history.size());
+        assertEquals(t2, history.get(0).getId());
+    }
+
+    // 11. При удалении подзадачи её id исчезает из эпика
+    @Test
+    void epicShouldNotKeepStaleSubtaskIdsAfterDelete() {
+        int epicId = manager.createEpic(new Epic(0, "Epic", "Desc", Status.NEW));
+        int s1 = manager.createSubtask(new Subtask(0, "Sub1", "Desc", Status.NEW, epicId));
+        int s2 = manager.createSubtask(new Subtask(0, "Sub2", "Desc", Status.NEW, epicId));
+
+        manager.getSubtask(s1);
+        manager.getSubtask(s2);
+        manager.deleteSubtask(s1);
+
+        Epic epic = manager.getEpic(epicId);
+        assertFalse(epic.getSubtaskIds().contains(s1), "Эпик не должен хранить id удалённой подзадачи");
+
+        manager.deleteAllSubtasks();
+        Epic epicAfterClear = manager.getEpic(epicId);
+        assertTrue(epicAfterClear.getSubtaskIds().isEmpty(), "После deleteAllSubtasks у эпика не должно быть подзадач");
+    }
+
     // Пример теста из подсказки
     @Test
     void add() {
-        Task task = new Task(1,"Task", "Desc",Status.NEW);
+        Task task = new Task(1, "Task", "Desc", Status.NEW);
         historyManager.add(task);
         final List<Task> history = historyManager.getHistory();
         assertNotNull(history, "После добавления задачи, история не должна быть пустой.");
         assertEquals(1, history.size(), "После добавления задачи, история не должна быть пустой.");
     }
+
     @Test
-    void checkHistory(){
+    void checkHistory() {
         Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW);
         Task task2 = new Task(2, "Task 2", "Description 2", Status.NEW);
         Task task3 = new Task(3, "Task 3", "Description 3", Status.NEW);

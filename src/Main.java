@@ -59,9 +59,6 @@ public class Main {
         System.out.println(manager.getAllEpics());
         manager.getAllEpics().forEach(System.out::println);
 
-
-
     }
-
 
 }
