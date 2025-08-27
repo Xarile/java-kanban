@@ -2,8 +2,6 @@ package manager;
 
 import java.util.*;
 import models.Task;
-import models.Epic;
-import models.Subtask;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -15,13 +13,13 @@ public class InMemoryHistoryManager implements HistoryManager {
         this.receivedTasks = new HashMap<>();
     }
 
-    private static class Node<Task> {
+    private static class Node<T> {
 
-        public Task data;
-        public Node<Task> next;
-        public Node<Task> prev;
+        public T data;
+        public Node<T> next;
+        public Node<T> prev;
 
-        public Node(Node<Task> prev, Task data, Node<Task> next) {
+        public Node(Node<T> prev, T data, Node<T> next) {
             this.data = data;
             this.next = next;
             this.prev = prev;
