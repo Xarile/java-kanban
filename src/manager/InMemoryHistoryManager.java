@@ -2,8 +2,6 @@ package manager;
 
 import java.util.*;
 import models.Task;
-import models.Epic;
-import models.Subtask;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int MAX_HISTORY_SIZE = 10;
