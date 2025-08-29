@@ -16,6 +16,10 @@ public class Task {
         this.status = status;
     }
 
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
     public Task copy() {
 
         return new Task(this.id, this.name, this.description, this.status);

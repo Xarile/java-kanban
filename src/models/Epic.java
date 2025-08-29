@@ -46,4 +46,9 @@ public class Epic extends Task {
         return copy;
 
     }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
+    }
 }

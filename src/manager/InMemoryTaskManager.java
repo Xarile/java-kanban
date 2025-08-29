@@ -249,4 +249,19 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(Status.IN_PROGRESS);
         }
     }
+
+    @Override
+    public List<Task> getTasks() {
+        return new ArrayList<>(tasks.values());
+    }
+
+    @Override
+    public List<Epic> getEpics() {
+        return new ArrayList<>(epics.values());
+    }
+
+    @Override
+    public List<Subtask> getSubtasks() {
+        return new ArrayList<>(subtasks.values());
+    }
 }
