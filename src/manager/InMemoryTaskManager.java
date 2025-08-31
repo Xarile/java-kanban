@@ -18,10 +18,6 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
-    private int generateNextId() {
-        return nextId++;
-    }
-
     @Override
     public int createTask(Task task) {
         task.setId(generateNextId());
@@ -221,6 +217,21 @@ public class InMemoryTaskManager implements TaskManager {
         return result;
     }
 
+    @Override
+    public List<Task> getTasks() {
+        return new ArrayList<>(tasks.values());
+    }
+
+    @Override
+    public List<Epic> getEpics() {
+        return new ArrayList<>(epics.values());
+    }
+
+    @Override
+    public List<Subtask> getSubtasks() {
+        return new ArrayList<>(subtasks.values());
+    }
+
     private void updateEpicStatus(Epic epic) {
         if (epic.getSubtaskIds().isEmpty()) {
             epic.setStatus(Status.NEW);
@@ -250,18 +261,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    @Override
-    public List<Task> getTasks() {
-        return new ArrayList<>(tasks.values());
-    }
-
-    @Override
-    public List<Epic> getEpics() {
-        return new ArrayList<>(epics.values());
-    }
-
-    @Override
-    public List<Subtask> getSubtasks() {
-        return new ArrayList<>(subtasks.values());
+    private int generateNextId() {
+        return nextId++;
     }
 }

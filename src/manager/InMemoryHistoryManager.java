@@ -13,19 +13,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         this.receivedTasks = new HashMap<>();
     }
 
-    private static class Node<T> {
-
-        public T data;
-        public Node<T> next;
-        public Node<T> prev;
-
-        public Node(Node<T> prev, T data, Node<T> next) {
-            this.data = data;
-            this.next = next;
-            this.prev = prev;
-        }
-    }
-
     @Override
     public void add(Task task) {
         if (task != null) {
@@ -42,6 +29,19 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public List<Task> getHistory() {
         return getTasks();
+    }
+
+    private static class Node<T> {
+
+        public T data;
+        public Node<T> next;
+        public Node<T> prev;
+
+        public Node(Node<T> prev, T data, Node<T> next) {
+            this.data = data;
+            this.next = next;
+            this.prev = prev;
+        }
     }
 
     private void linkLast(Task element) {
