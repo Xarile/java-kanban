@@ -1,12 +1,11 @@
+import manager.FileBackedTaskManager;
 import models.Epic;
 import models.Status;
 import models.Subtask;
 import models.Task;
 import manager.Managers;
 import manager.TaskManager;
-
-import java.util.List;
-
+import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
@@ -58,10 +57,14 @@ public class Main {
         System.out.println("\nЭпики после удаления:");
         System.out.println(manager.getAllEpics());
         manager.getAllEpics().forEach(System.out::println);
+        System.out.println(" ");
 
+        //Отобразить в консоль tasks.csv
+        File file = new File("tasks.csv");
+        FileBackedTaskManager load = FileBackedTaskManager.loadFromFile(file);
 
-
+        System.out.println(load.getTasks());
+        System.out.println(load.getEpics());
+        System.out.println(load.getSubtasks());
     }
-
-
 }
