@@ -15,7 +15,7 @@ public class Task {
     public Task(int id, String name, String description, Status status) {
         this(id, name, description, status, Duration.ZERO, null);
     }
-    
+
     public Task(int id, String name, String description, Status status, Duration duration, LocalDateTime startTime) {
         this.id = id;
         this.name = name;
@@ -30,7 +30,6 @@ public class Task {
     }
 
     public Task copy() {
-
         return new Task(this.id, this.name, this.description, this.status, this.duration, this.startTime);
     }
 
