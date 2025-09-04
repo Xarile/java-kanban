@@ -3,6 +3,8 @@ package manager;
 import models.*;
 import java.io.*;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
@@ -70,9 +72,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (Writer writer = new FileWriter(file)) {
-            writer.write("id,type,name,status,description,epic\n");
+            writer.write("id,type,name,status,description,duration,startTime,epic\n");
             for (Task task : getAllTasks()) {
                 writer.write(toString(task) + "\n");
+            }
+            for (Epic epic : getAllEpics()) {
+                writer.write(toString(epic) + "\n");
+            }
+            for (Subtask subtask : getAllSubtasks()) {
+                writer.write(toString(subtask) + "\n");
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка сохранения файла", e);
@@ -80,38 +88,64 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private String toString(Task task) {
-        String base = String.format("%d,%s,%s,%s,%s",
+        String durationStr = task.getDuration() != null ?
+                String.valueOf(task.getDuration().toMinutes()) : "0";
+        String startTimeStr = task.getStartTime() != null ?
+                task.getStartTime().toString() : "null";
+
+        String base = String.format("%d,%s,%s,%s,%s,%s,%s",
                 task.getId(),
                 task.getType(),
                 task.getName(),
                 task.getStatus(),
-                task.getDescription()
-        );
+                task.getDescription(),
+                durationStr,
+                startTimeStr);
 
         if (task instanceof Subtask) {
             return base + "," + ((Subtask) task).getEpicId();
         } else {
-            return base + ",";
+            return base;
         }
     }
 
-    private Task fromString(String value) {
-        String[] fields = value.split(",");
-        int id = Integer.parseInt(fields[0]);
-        TaskType type = TaskType.valueOf(fields[1]);
-        String name = fields[2];
-        Status status = Status.valueOf(fields[3]);
-        String description = fields[4];
+    private Task fromString(String line) {
+        line = line.replaceAll("[\\[\\]\"]", "").trim();
+        String[] fields = line.split(",");
 
-        return switch (type) {
-            case TASK -> new Task(id, name, description, status);
-            case EPIC -> new Epic(id, name, description, status);
-            case SUBTASK -> {
-                int epicId = Integer.parseInt(fields[5]);
-                yield new Subtask(id, name, description, status, epicId);
+        for (int i = 0; i < fields.length; i++) {
+            fields[i] = fields[i].trim();
+        }
+
+        try {
+            int id = Integer.parseInt(fields[0]);
+            TaskType type = TaskType.valueOf(fields[1]);
+            String name = fields[2];
+            Status status = Status.valueOf(fields[3]);
+            String description = fields[4];
+
+            Duration duration = Duration.ofMinutes(Long.parseLong(fields[5]));
+            LocalDateTime startTime = "null".equals(fields[6]) ? null : LocalDateTime.parse(fields[6]);
+
+            switch (type) {
+                case TASK:
+                    return new Task(id, name, description, status, duration, startTime);
+                case EPIC:
+                    Epic epic = new Epic(id, name, description, status);
+                    epic.setDuration(duration);
+                    epic.setStartTime(startTime);
+                    return epic;
+                case SUBTASK:
+                    int epicId = Integer.parseInt(fields[7]);
+                    return new Subtask(id, name, description, status, epicId, duration, startTime);
+                default:
+                    throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
             }
-            default -> throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
-        };
+        } catch (Exception e) {
+            System.err.println("Ошибка парсинга строки: " + line);
+            e.printStackTrace();
+            throw new ManagerSaveException("Ошибка парсинга задачи из строки: " + line, e);
+        }
     }
 
     private void addWithoutSave(Task task) {
