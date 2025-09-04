@@ -1,5 +1,7 @@
 package models;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -7,17 +9,28 @@ public class Task {
     private String name;
     private String description;
     private Status status;
-
+    private Duration duration;
+    private LocalDateTime startTime;
 
     public Task(int id, String name, String description, Status status) {
+        this(id, name, description, status, Duration.ZERO, null);
+    }
+
+    public Task(int id, String name, String description, Status status, Duration duration, LocalDateTime startTime) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
     }
-    public Task copy() {
 
-         return new Task(this.id, this.name, this.description, this.status);
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
+    public Task copy() {
+        return new Task(this.id, this.name, this.description, this.status, this.duration, this.startTime);
     }
 
     public int getId() {
@@ -52,6 +65,27 @@ public class Task {
         this.status = status;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime == null) return null;
+        return startTime.plus(duration);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -72,6 +106,9 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", duration=" + duration.toMinutes() + "m" +
+                ", startTime=" + startTime +
+                ", endTime=" + getEndTime() +
                 '}';
     }
 }
