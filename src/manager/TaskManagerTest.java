@@ -18,6 +18,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void init() {
         taskManager = createManager();
     }
+
     // Проверить корректность создания и получения задачи из менеджера
     @Test
     void testCreateAndGetTask() {
@@ -28,6 +29,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNotNull(saved, "Задача должна сохраняться");
         assertEquals("Task1", saved.getName(), "Имя должно совпадать");
     }
+
     // Проверить связь между эпиком и его подзадачами
     @Test
     void testCreateAndGetEpicWithSubtasks() {
@@ -41,6 +43,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic savedEpic = taskManager.getEpic(epicId);
         assertTrue(savedEpic.getSubtaskIds().contains(subId), "Эпик должен содержать подзадачу");
     }
+
     // Проверить корректность удаления задач из менеджера
     @Test
     void testDeleteTask() {
@@ -50,6 +53,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         assertNull(taskManager.getTask(id), "Удалённая задача должна отсутствовать");
     }
+
     // Проверить расчет статуса эпика, когда все подзадачи имеют статус NEW
     @Test
     void testEpicStatusWhenAllSubtasksNew() {
@@ -62,6 +66,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic saved = taskManager.getEpic(epicId);
         assertEquals(Status.NEW, saved.getStatus(), "Если все NEW — эпик тоже NEW");
     }
+
     // Проверить расчет статуса эпика, когда все подзадачи имеют статус DONE
     @Test
     void testEpicStatusWhenAllSubtasksDone() {
@@ -74,6 +79,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic saved = taskManager.getEpic(epicId);
         assertEquals(Status.DONE, saved.getStatus(), "Если все DONE — эпик DONE");
     }
+
     // Проверить расчет статуса эпика при смешанных статусах подзадач
     @Test
     void testEpicStatusWhenMixedNewAndDone() {
@@ -86,6 +92,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic saved = taskManager.getEpic(epicId);
         assertEquals(Status.IN_PROGRESS, saved.getStatus(), "Смешанные NEW/DONE = IN_PROGRESS");
     }
+
     // Проверить расчет статуса эпика при наличии подзадач IN_PROGRESS
     @Test
     void testEpicStatusWhenInProgressSubtasks() {
@@ -97,6 +104,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic saved = taskManager.getEpic(epicId);
         assertEquals(Status.IN_PROGRESS, saved.getStatus(), "Если есть IN_PROGRESS — эпик тоже IN_PROGRESS");
     }
+
     // Проверить пересечения задач
     @Test
     void testTimeOverlapPrevention() {
