@@ -8,9 +8,18 @@ public class Epic extends Task {
     private List<Integer> subtaskIds;
     private LocalDateTime endTime;
 
+    public Epic() {
+        super(0, "", "", Status.NEW);
+        this.subtaskIds = new ArrayList<>();
+    }
+
     public Epic(int id, String name, String description, Status status) {
         super(id, name, description, status);
         this.subtaskIds = new ArrayList<>();
+    }
+
+    public void setSubtaskIds(List<Integer> subtaskIds) {
+        this.subtaskIds = subtaskIds != null ? subtaskIds : new ArrayList<>();
     }
 
     public List<Integer> getSubtaskIds() {
